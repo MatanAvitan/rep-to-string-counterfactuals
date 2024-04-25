@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
+import sys
+from pathlib import Path
+base_path = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(base_path))
 
 
 import dill
@@ -47,8 +51,7 @@ def get_e5_embeddings(text_list,
 encoder = AutoModel.from_pretrained("intfloat/multilingual-e5-base").to(device)
 tokenizer = AutoTokenizer.from_pretrained("intfloat/multilingual-e5-base")
 corrector = vec2text.load_corrector("yiyic/t5_me5_base_mtg_en_5m_64")
-sents = [
-    '']
+sents = ['']
 embs, _ = get_e5_embeddings(sents, encoder, tokenizer)
 
 transformed = vec2text.invert_embeddings(

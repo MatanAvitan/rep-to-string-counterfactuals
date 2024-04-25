@@ -50,7 +50,7 @@ def load_corrector(embedder: str) -> vec2text.trainers.Corrector:
         )
     elif embedder == "bias-bios64":
         inversion_model = vec2text.models.InversionModel.from_pretrained(
-            "/home/nlp/matan_avitan/git/vec2text/saves/train_on_bios/output-checkpoin-259966/checkpoint-2232"
+            "MatanAvitan/gtr__nq__64_bios__correct"
         )
         model = vec2text.models.CorrectorEncoderModel.from_pretrained(
             "jxm/gtr__nq__32__correct"

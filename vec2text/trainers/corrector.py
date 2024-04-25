@@ -13,8 +13,8 @@ from vec2text.models.model_utils import freeze_params
 from vec2text.run_args import TrainingArguments
 from vec2text.utils import dataset_map_multi_worker
 
-from .base import BaseTrainer
-from .inversion import InversionTrainer
+from vec2text.trainers.base import BaseTrainer
+from vec2text.trainers.inversion import InversionTrainer
 
 logger = logging.getLogger(__name__)
 

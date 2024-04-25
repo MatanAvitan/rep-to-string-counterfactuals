@@ -1,0 +1,9 @@
+bios_train_df.shape: (255710, 7)
+bios_dev_df.shape: (39369, 7)
+bios_test_df.shape: (98344, 7)
+/home/nlp/matan_avitan/git/rep-to-string-counterfactuals/notebooks/generate_counterfactuals/leace_erasure_males.py:87: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  z_train = bios_train_df['g'].replace('f', 0).replace('m', 1).astype(int).to_numpy()
+/home/nlp/matan_avitan/git/rep-to-string-counterfactuals/notebooks/generate_counterfactuals/leace_erasure_males.py:88: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  z_dev = bios_dev_df['g'].replace('f', 0).replace('m', 1).astype(int).to_numpy()
+
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████| 8/8 [00:01<00:00,  4.91it/s]
