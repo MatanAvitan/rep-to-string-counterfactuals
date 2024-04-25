@@ -29,3 +29,5 @@ notebooks/generate_samples_me5_64_ctx_length_hard_text_only_encodings
 results/
 
 *.csv
+
+.vscode
