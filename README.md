@@ -17,7 +17,14 @@ In this paper, we give a method to convert representation counterfactuals into s
 We demonstrate that this approach enables us to analyze the linguistic alterations corresponding to a given representation space intervention and to interpret the features utilized for encoding a specific concept. Moreover, the resulting counterfactuals can be used to mitigate bias in classification through data augmentation.
 
 <p align="center">
-<object data="figures/Fig1.pdf" width="650" type="application/pdf">
+<img src="figures/fig1.jpg" width="650">
 </p>
 
+# What we found 
+It is possible to map representation space counterfactuals back into the input space (natural language).
+We confirm the high quality of the resultant counterfactual texts and illustrate their effectiveness in bias mitigation.
 
+
+<p align="center">
+<img src="figures/table1.png" width="650">
+</p>
