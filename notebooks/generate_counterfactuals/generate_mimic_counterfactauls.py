@@ -6,11 +6,6 @@ This script utilizes an interactive update of the generated counterfactuals for 
 
 #!/usr/bin/env python
 # coding: utf-8
-import sys
-from pathlib import Path
-base_path = Path('/home/nlp/matan_avitan/git/rep-to-string-counterfactuals')
-sys.path.insert(0, str(base_path))
-
 import os
 import pickle
 import pathlib
