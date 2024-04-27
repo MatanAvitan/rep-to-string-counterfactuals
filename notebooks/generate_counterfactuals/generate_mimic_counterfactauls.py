@@ -1,3 +1,9 @@
+"""
+Generate string-level counterfactuals using MiMiC, over bias-bios dataset (for samples up to 64 tokens length).
+This script utilizes an interactive update of the generated counterfactuals for each batch using WANDB table.
+"""
+
+
 #!/usr/bin/env python
 # coding: utf-8
 import sys
@@ -24,7 +30,8 @@ os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ['CUDA_VISIBLE_DEVICES'] = '2,3'
 
 BASE_MODEL = 'bias-bios64'
-DATASET_PATH = '/home/nlp/matan_avitan/git/vec2text/train_data/bias_bios'
+DATASET_PATH = '/home/nlp/matan_avitan/git/vec2text_inter/bios_data' # Change to the path of the downloaded bias-bios DS
+OUTPUT_PATH = '/home/nlp/matan_avitan/git/vec2text/datasets_creation' # Change to the output path of the resultant counterfactuals
 IS_FIRST = False
 MAX_SEQUENCE_LENGTH = 64
 PROCESSING_BATCH_SIZE = 128
@@ -58,20 +65,19 @@ if IS_FIRST:
     os.system(
         'wget -r --no-clobber --no-parent -R "index.html*" -nH --cut-dirs=4 -P bios_data https://nlp.biu.ac.il/~ravfogs/rlace-cr/bios/bios_data/')
 
-with open("/home/nlp/matan_avitan/git/vec2text_inter/bios_data/bios_train.pickle", "rb") as f:
+with open(f"{DATASET_PATH}/bios_train.pickle", "rb") as f:
     bios_train = pickle.load(f)
 
-with open("/home/nlp/matan_avitan/git/vec2text_inter/bios_data/bios_dev.pickle", "rb") as f:
+with open(f"{DATASET_PATH}/bios_dev.pickle", "rb") as f:
     bios_dev = pickle.load(f)
 
-with open("/home/nlp/matan_avitan/git/vec2text_inter/bios_data/bios_test.pickle", "rb") as f:
+with open(f"{DATASET_PATH}/bios_test.pickle", "rb") as f:
     bios_test = pickle.load(f)
 
 """
 A look into the dataset
 """
 
-# ds = datasets.load_from_disk(DATASET_PATH)
 
 bios_train_df = pd.DataFrame(bios_train)
 bios_dev_df = pd.DataFrame(bios_dev)
@@ -157,7 +163,7 @@ for lower_bound in tqdm.tqdm(range(0, len(female_mask_indices), INVERSION_BATCH_
         )
     [transformed_table_wandb.add_data(*i) for i
      in bios_train_df.loc[batch_indices, ['hard_text', 'transformed_hard_text']].to_records(index=False).tolist()]
-wandb.log({'transformed_hard_text': transformed_table_wandb})
+
 
 """
 Linear transformation of the male repr dist to the female repr dist
@@ -183,9 +189,10 @@ for lower_bound in tqdm.tqdm(range(0, len(male_mask_indices), INVERSION_BATCH_SI
             num_steps=NUM_CORRECTION_STEPS,
             sequence_beam_width=BEAM_SEARCH_SIZE,
         )
-
-# bios_train_df.to_csv(
-    # f'/home/nlp/matan_avitan/git/vec2text/datasets_creation/{file_name}_{BASE_MODEL}_{MAX_SEQUENCE_LENGTH}_{NUM_CORRECTION_STEPS}_{BEAM_SEARCH_SIZE}.csv',
-    # index=False, escapechar='\\')
+    [transformed_table_wandb.add_data(*i) for i
+     in bios_train_df.loc[batch_indices, ['hard_text', 'transformed_hard_text']].to_records(index=False).tolist()]
+wandb.log({'transformed_hard_text': transformed_table_wandb})
 wandb.finish()
-# bios_train_df.to_csv('bios_data/bios_train_df.csv', index=False)
+bios_train_df.to_csv(
+    f'{OUTPUT_PATH}/{file_name}_{BASE_MODEL}_{MAX_SEQUENCE_LENGTH}_{NUM_CORRECTION_STEPS}_{BEAM_SEARCH_SIZE}.csv',
+    index=False, escapechar='\\')

@@ -26,6 +26,7 @@ N_SAMPLES = 30
 INVERSION_BATCH_SIZE = 16
 NUM_CORRECTION_STEPS = 0
 BEAM_SEARCH_SIZE = 0
+OUTPUT_PATH = '/home/nlp/matan_avitan/git/vec2text/datasets_creation'
 
 file_name = pathlib.Path(__file__).name
 wandb.init(project=file_name,
@@ -129,4 +130,6 @@ bios_train_df.to_csv(
     f'/home/nlp/matan_avitan/git/vec2text_inter/bios_data/{file_name}_{MAX_SEQUENCE_LENGTH}_{NUM_CORRECTION_STEPS}_{BEAM_SEARCH_SIZE}.csv',
     index=False, escapechar='\\')
 wandb.finish()
-# bios_train_df.to_csv('bios_data/bios_train_df.csv', index=False)
+bios_train_df.to_csv(
+    f'{OUTPUT_PATH}/biasbios64_compared_to_gtr32.csv',
+    index=False, escapechar='\\')
