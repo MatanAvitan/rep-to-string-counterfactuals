@@ -31,3 +31,4 @@ results/
 *.csv
 
 .vscode
+vec2text/models/__pycache__
