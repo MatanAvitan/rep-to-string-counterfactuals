@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+import sys
+from pathlib import Path
+base_path = Path('/home/nlp/matan_avitan/git/rep-to-string-counterfactuals')
+sys.path.insert(0, str(base_path))
 
 import os
 import pickle
@@ -176,11 +179,13 @@ for lower_bound in tqdm.tqdm(range(0, len(male_mask_indices), INVERSION_BATCH_SI
     bios_train_df.loc[batch_indices, 'transformed_hard_text'] = \
         vec2text.invert_embeddings(
             torch.tensor(train_x_transformed[batch_indices]).cuda().float(),
-            corrector=corrector
+            corrector=corrector,
+            num_steps=NUM_CORRECTION_STEPS,
+            sequence_beam_width=BEAM_SEARCH_SIZE,
         )
 
-bios_train_df.to_csv(
-    f'/home/nlp/matan_avitan/git/vec2text/datasets_creation/{file_name}_{BASE_MODEL}_{MAX_SEQUENCE_LENGTH}_{NUM_CORRECTION_STEPS}_{BEAM_SEARCH_SIZE}.csv',
-    index=False, escapechar='\\')
+# bios_train_df.to_csv(
+    # f'/home/nlp/matan_avitan/git/vec2text/datasets_creation/{file_name}_{BASE_MODEL}_{MAX_SEQUENCE_LENGTH}_{NUM_CORRECTION_STEPS}_{BEAM_SEARCH_SIZE}.csv',
+    # index=False, escapechar='\\')
 wandb.finish()
 # bios_train_df.to_csv('bios_data/bios_train_df.csv', index=False)

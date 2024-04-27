@@ -19,7 +19,7 @@ from vec2text.models.model_utils import device
 
 IS_FIRST = False
 THEIR_BASE_MODEL = 'gtr-base'
-OUR_BASE_MODEL = 'checkpoint-166284'
+OUR_BASE_MODEL = 'bias-bios64'
 MAX_SEQUENCE_LENGTH = 64
 PROCESSING_BATCH_SIZE = 64
 N_SAMPLES = 30
