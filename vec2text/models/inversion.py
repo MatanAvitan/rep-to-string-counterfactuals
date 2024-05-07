@@ -7,6 +7,7 @@ import torch.nn as nn
 import transformers
 from sentence_transformers import SentenceTransformer
 
+from consts import BASE
 from vec2text.models.config import InversionConfig
 from vec2text.models.model_utils import (
     FREEZE_STRATEGIES,
@@ -74,8 +75,9 @@ class InversionModel(transformers.PreTrainedModel):
                 max_length=config.max_seq_length,
             )
         else:
+            print(f'{BASE}/vec2text/tokenizer')
             tokenizer = load_tokenizer(
-                '/home/nlp/matan_avitan/git/vec2text/tokenizer',
+                f'{BASE}/tokenizer',
                 max_length=config.max_seq_length,
             )
 
