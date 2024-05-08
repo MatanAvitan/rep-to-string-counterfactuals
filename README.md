@@ -1,4 +1,4 @@
-# <div align="center">Converting Representational Counterfactuals to Natural Language</div>
+# <div align="center">Natural Language Counterfactuals through Representation Surgery</div>
 <div align="center">Matan Avitan, Ryan Cotterell, Yoav Goldberg, Shauli Ravfogel
 <br><br>
 
