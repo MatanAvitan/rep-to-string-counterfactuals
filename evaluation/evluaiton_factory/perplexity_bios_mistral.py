@@ -28,7 +28,7 @@ SEED=0
 np.random.seed(SEED)
 random.seed(SEED)
 IS_FIRST = False
-SAMPLE = 1_000
+SAMPLE = 2_000
 
 file_name = pathlib.Path(__file__).name
 
@@ -36,10 +36,10 @@ from evaluate import load
 
 perplexity = load("perplexity", module_type="metric")
 
-base = '/home/nlp/matan_avitan/git/rep-to-string-counterfactuals/data/new_bios_cfs'
-leace_females = f'{base}/leace_female_removal.csv'
+base = '/home/nlp/matan_avitan/git/rep-to-string-counterfactuals/data/bios_cfs'
+leace_females = f'{base}/leace_remove_female.csv'
 leace_females_df = pd.read_csv(leace_females)
-leace_males = f'{base}/leace_male_removal.csv'
+leace_males = f'{base}/leace_remove_male.csv'
 leace_males_df = pd.read_csv(leace_males)
 ot_males_to_females = f'{base}/mimic_male_to_female.csv'
 ot_males_to_females_df = pd.read_csv(ot_males_to_females)
