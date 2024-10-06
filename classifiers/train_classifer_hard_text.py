@@ -110,7 +110,7 @@ if IS_FIRST:
 
     train_ds = train_ds.map(create_input_sequence, batched=True, batch_size=1, remove_columns=columns_to_remove,
                             num_proc=16)
-    train_ds.save_to_disk(f'{EXP_NAME}_train_dataset')
+    train_ds.save_to_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_train_dataset')
     columns_to_remove = list(set(validation_df.columns) - set(columns_to_preserve))
     validation_ds = validation_ds.map(create_input_sequence, batched=True, batch_size=1,
                                       remove_columns=columns_to_remove,
