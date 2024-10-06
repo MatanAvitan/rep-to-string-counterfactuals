@@ -36,3 +36,4 @@ vec2text/models/__pycache__
 
 classifiers_output/**
 data/**
+classifiers_data/**

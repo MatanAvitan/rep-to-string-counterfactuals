@@ -17,12 +17,12 @@ from datetime import datetime
 import wandb
 from pathlib import Path
 from sklearn.preprocessing import LabelEncoder
-from consts import BIOS_CFS_DATA_PATH, CLASSIFIERS_OUTPUT_PATH, BIOS_RAW_DATA_PATH 
+from consts import BIOS_CFS_DATA_PATH, CLASSIFIERS_OUTPUT_PATH, BIOS_RAW_DATA_PATH, CLASSIFIERS_DATA_PATH 
 
 EXP_NAME = 'hard_text'
 MAX_LENGTH = 64
 SEED = 0
-IS_FIRST = True
+IS_FIRST = False
 FEATURE_TEXT = 'hard_text'
 
 file_name = Path(__file__).name
@@ -115,10 +115,10 @@ if IS_FIRST:
     validation_ds = validation_ds.map(create_input_sequence, batched=True, batch_size=1,
                                       remove_columns=columns_to_remove,
                                       num_proc=16)
-    validation_ds.save_to_disk(f'{EXP_NAME}_validation_dataset')
+    validation_ds.save_to_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_validation_dataset')
 else:
-    train_ds = datasets.load_from_disk(f'{EXP_NAME}_train_dataset')
-    validation_ds = datasets.load_from_disk(f'{EXP_NAME}_validation_dataset')
+    train_ds = datasets.load_from_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_train_dataset')
+    validation_ds = datasets.load_from_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_validation_dataset')
 
 
 def calculate_tpr(y_pred, y_true, z_true):
