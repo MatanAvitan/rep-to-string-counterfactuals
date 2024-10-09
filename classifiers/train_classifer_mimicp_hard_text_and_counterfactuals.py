@@ -17,6 +17,7 @@ from datetime import datetime
 import wandb
 from pathlib import Path
 from sklearn.preprocessing import LabelEncoder
+from consts import BIOS_CFS_DATA_PATH, CLASSIFIERS_OUTPUT_PATH, BIOS_RAW_DATA_PATH, CLASSIFIERS_DATA_PATH 
 
 EXP_NAME = 'new_ot_hard_text_and_counterfactuals'
 MAX_LENGTH = 64
@@ -36,11 +37,11 @@ def log_print(str_to_print):
 
 
 # # Load data
-with open("/home/nlp/matan_avitan/git/vec2text_inter/bios_data/bios_dev.pickle", "rb") as f:
+with open(f"{BIOS_RAW_DATA_PATH}/bios_dev.pickle", "rb") as f:
     validation_df = pd.DataFrame(pickle.load(f))
 
-ot_females_to_males_path = f'bios_extracted_data/new_ot_females_to_males.csv'
-ot_males_to_females_path = f'bios_extracted_data/new_ot_males_to_females.csv'
+ot_females_to_males_path = f'{BIOS_CFS_DATA_PATH}/mimic_plus_female_to_male.csv'
+ot_males_to_females_path = f'{BIOS_CFS_DATA_PATH}/mimic_plus_male_to_female.csv'
 
 ot_females_to_males_df = pd.read_csv(ot_females_to_males_path)
 ot_males_to_females_df = pd.read_csv(ot_males_to_females_path)
@@ -57,7 +58,7 @@ label2id = {l: i for i, l in enumerate(labels)}
 
 formatted_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 # Define the directory where the output/results will be saved
-output_dir = f'/home/nlp/matan_avitan/tmp/vec2text_inter/trained_models/{EXP_NAME}_classifier_{formatted_datetime}'
+output_dir = f'{CLASSIFIERS_OUTPUT_PATH}/{EXP_NAME}_classifier_{formatted_datetime}'
 # Define the specific pre-trained model to be used
 model_name = "FacebookAI/roberta-base"
 # Init config with labels
@@ -113,15 +114,15 @@ if IS_FIRST:
 
     train_ds = train_ds.map(create_input_sequence, batched=True, batch_size=1, remove_columns=columns_to_remove,
                             num_proc=16)
-    train_ds.save_to_disk(f'{EXP_NAME}_train_dataset')
+    train_ds.save_to_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_train_dataset')
     columns_to_remove = list(set(validation_df.columns) - set(columns_to_preserve))
     validation_ds = validation_ds.map(create_input_sequence, batched=True, batch_size=1,
                                       remove_columns=columns_to_remove,
                                       num_proc=16)
-    validation_ds.save_to_disk(f'{EXP_NAME}_validation_dataset')
+    validation_ds.save_to_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_validation_dataset')
 else:
-    train_ds = datasets.load_from_disk(f'{EXP_NAME}_train_dataset')
-    validation_ds = datasets.load_from_disk(f'{EXP_NAME}_validation_dataset')
+    train_ds = datasets.load_from_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_train_dataset')
+    validation_ds = datasets.load_from_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_validation_dataset')
 
 
 def compute_metrics(p: EvalPrediction):

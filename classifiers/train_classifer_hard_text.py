@@ -22,7 +22,7 @@ from consts import BIOS_CFS_DATA_PATH, CLASSIFIERS_OUTPUT_PATH, BIOS_RAW_DATA_PA
 EXP_NAME = 'hard_text'
 MAX_LENGTH = 64
 SEED = 0
-IS_FIRST = False
+IS_FIRST = True
 FEATURE_TEXT = 'hard_text'
 
 file_name = Path(__file__).name
@@ -39,6 +39,7 @@ def log_print(str_to_print):
 # # Load data
 with open(f"{BIOS_RAW_DATA_PATH}/bios_dev.pickle", "rb") as f:
     validation_df = pd.DataFrame(pickle.load(f))
+    validation_df['g'] = validation_df['g'].replace('f', 0).replace('m', 1).astype(int)
 
 ot_females_to_males_path = f'{BIOS_CFS_DATA_PATH}/mimic_female_to_male.csv'
 ot_males_to_females_path = f'{BIOS_CFS_DATA_PATH}/mimic_male_to_female.csv'
@@ -83,6 +84,7 @@ def create_input_sequence(sample):
     encoded_sequence['input_sentence'] = tokenizer.batch_decode(encoded_sequence.input_ids)
     # Assign label to the encoded sequence
     encoded_sequence['labels'] = labels
+    encoded_sequence['g'] = sample['g']
     return encoded_sequence
 
 
@@ -215,3 +217,24 @@ torch.save(model.state_dict(), output_dir + "/modeldir_new/model.pth")
 tokenizer.save_pretrained(output_dir + "/modeldir_new/tokenizer")
 
 trainer.save_model(output_dir + "/modeldir_new/trainer_model")
+
+# Make predictions on the validation dataset
+prediction_output = trainer.predict(validation_ds)
+
+# Extract predictions and true labels
+preds = np.argmax(prediction_output.predictions, axis=1)
+labels = prediction_output.label_ids
+
+# Extract sensitive attribute 'g' from the validation dataset
+z_true = np.array(validation_ds['g'])
+
+# Compute the TPR gap
+tpr_gap = calculate_tpr(y_pred=preds, y_true=labels, z_true=z_true)
+
+# Print and log the TPR gap
+print(f"TPR gap: {tpr_gap}")
+wandb.log({'tpr_gap': tpr_gap})
+
+print("Validation dataset columns:", validation_ds.column_names)
+print("First few entries of 'g' in validation dataset:", validation_ds['g'][:5])
+print("Unique values in 'g' in validation dataset:", set(validation_ds['g']))

@@ -215,3 +215,20 @@ torch.save(model.state_dict(), output_dir + "/modeldir_new/model.pth")
 tokenizer.save_pretrained(output_dir + "/modeldir_new/tokenizer")
 
 trainer.save_model(output_dir + "/modeldir_new/trainer_model")
+
+# Make predictions on the validation dataset
+prediction_output = trainer.predict(validation_ds)
+
+# Extract predictions and true labels
+preds = np.argmax(prediction_output.predictions, axis=1)
+labels = prediction_output.label_ids
+
+# Extract sensitive attribute 'g' from the validation dataset
+z_true = np.array(validation_ds['g'])
+
+# Compute the TPR gap
+tpr_gap = calculate_tpr(y_pred=preds, y_true=labels, z_true=z_true)
+
+# Print and log the TPR gap
+print(f"TPR gap: {tpr_gap}")
+wandb.log({'tpr_gap': tpr_gap})

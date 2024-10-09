@@ -17,6 +17,7 @@ from datetime import datetime
 import wandb
 from pathlib import Path
 from sklearn.preprocessing import LabelEncoder
+from consts import BIOS_CFS_DATA_PATH, CLASSIFIERS_OUTPUT_PATH, BIOS_RAW_DATA_PATH, CLASSIFIERS_DATA_PATH 
 
 EXP_NAME = 'leace_hard_text_and_counterfactuals'
 MAX_LENGTH = 64
@@ -36,11 +37,11 @@ def log_print(str_to_print):
 
 
 # # Load data
-with open("/home/nlp/matan_avitan/git/vec2text_inter/bios_data/bios_dev.pickle", "rb") as f:
+with open(f"{BIOS_RAW_DATA_PATH}/bios_dev.pickle", "rb") as f:
     validation_df = pd.DataFrame(pickle.load(f))
 
-ot_females_to_males_path = f'bios_extracted_data/leace_females.csv'
-ot_males_to_females_path = f'bios_extracted_data/leace_males.csv'
+ot_females_to_males_path = f'{BIOS_CFS_DATA_PATH}/leace_remove_female.csv'
+ot_males_to_females_path = f'{BIOS_CFS_DATA_PATH}/leace_remove_male.csv'
 
 ot_females_to_males_df = pd.read_csv(ot_females_to_males_path)
 ot_males_to_females_df = pd.read_csv(ot_males_to_females_path)
