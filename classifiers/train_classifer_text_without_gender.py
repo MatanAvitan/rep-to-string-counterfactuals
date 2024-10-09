@@ -39,6 +39,7 @@ def log_print(str_to_print):
 # # Load data
 with open(f"{BIOS_RAW_DATA_PATH}/bios_dev.pickle", "rb") as f:
     validation_df = pd.DataFrame(pickle.load(f))
+    validation_df['g'] = validation_df['g'].replace('f', 0).replace('m', 1).astype(int)
 
 ot_females_to_males_path = f'{BIOS_CFS_DATA_PATH}/mimic_female_to_male.csv'
 ot_males_to_females_path = f'{BIOS_CFS_DATA_PATH}/mimic_male_to_female.csv'
@@ -84,6 +85,7 @@ def create_input_sequence(sample):
     encoded_sequence['input_sentence'] = tokenizer.batch_decode(encoded_sequence.input_ids)
     # Assign label to the encoded sequence
     encoded_sequence['labels'] = labels
+    encoded_sequence['g'] = sample['g']
     return encoded_sequence
 
 
@@ -98,6 +100,7 @@ def validation_create_input_sequence(sample):
     encoded_sequence['input_sentence'] = tokenizer.batch_decode(encoded_sequence.input_ids)
     # Assign label to the encoded sequence
     encoded_sequence['labels'] = labels
+    encoded_sequence['g'] = sample['g']
     return encoded_sequence
 
 
@@ -133,6 +136,17 @@ if IS_FIRST:
 else:
     train_ds = datasets.load_from_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_train_dataset')
     validation_ds = datasets.load_from_disk(f'{CLASSIFIERS_DATA_PATH}/{EXP_NAME}_validation_dataset')
+
+
+def calculate_tpr(y_pred, y_true, z_true):
+    rms_tpr_gap = 0.0
+    for y in set(y_pred):
+        tpr_1 = (((y_pred[y_true == y])[z_true[y_true == y] == 1]) == y).mean()
+        tpr_0 = (((y_pred[y_true == y])[z_true[y_true == y] == 0]) == y).mean()
+        rms_tpr_gap += (tpr_1 - tpr_0) ** 2
+
+    rms_tpr_gap = np.sqrt(rms_tpr_gap / len(set(y_pred)))
+    return rms_tpr_gap
 
 
 def compute_metrics(p: EvalPrediction):
@@ -218,3 +232,24 @@ torch.save(model.state_dict(), output_dir + "/modeldir_new/model.pth")
 tokenizer.save_pretrained(output_dir + "/modeldir_new/tokenizer")
 
 trainer.save_model(output_dir + "/modeldir_new/trainer_model")
+
+# Make predictions on the validation dataset
+prediction_output = trainer.predict(validation_ds)
+
+# Extract predictions and true labels
+preds = np.argmax(prediction_output.predictions, axis=1)
+labels = prediction_output.label_ids
+
+# Extract sensitive attribute 'g' from the validation dataset
+z_true = np.array(validation_ds['g'])
+
+# Compute the TPR gap
+tpr_gap = calculate_tpr(y_pred=preds, y_true=labels, z_true=z_true)
+
+# Print and log the TPR gap
+print(f"TPR gap: {tpr_gap}")
+wandb.log({'tpr_gap': tpr_gap})
+
+print("Validation dataset columns:", validation_ds.column_names)
+print("First few entries of 'g' in validation dataset:", validation_ds['g'][:5])
+print("Unique values in 'g' in validation dataset:", set(validation_ds['g']))
