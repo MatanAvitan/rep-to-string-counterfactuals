@@ -30,6 +30,6 @@ We confirm the high quality of the resultant counterfactual texts and illustrate
 </p>
 
 # Quickstart notebook
-[The quickstart notebook](https://github.com/MatanAvitan/rep-to-string-counterfactuals/blob/main/notebooks/quickstart_create_counterfactuals.ipynb) \
+[The quickstart notebook](https://github.com/MatanAvitan/rep-to-string-counterfactuals/blob/main/notebooks/biasbios/quickstart_create_counterfactuals.ipynb) \
 is a great place to start from!
 Using the notebook you'll downloand the BiasBioas Dataset, load our trained inversion model from HuggingFace, apply representational interventions and project them back to the natural language space. 
