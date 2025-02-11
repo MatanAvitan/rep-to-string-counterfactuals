@@ -1,4 +1,4 @@
-# <div align="center">Intervention Lens: From Representation Surgery to String Counterfactuals</div>
+# <div align="center">A Practical Method for Generating String Counterfactuals</div>
 <div align="center">Matan Avitan, Ryan Cotterell, Yoav Goldberg, Shauli Ravfogel
 <br><br>
 
